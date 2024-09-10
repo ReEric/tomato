@@ -117,8 +117,10 @@
         let timerElement = document.querySelector('.timer span');
         let timeLeft = 25 * 60; // 25 minutes in seconds
         let timerInterval;
+        let isPaused = false; // Track whether the timer is paused
 
         function startTimer() {
+            clearInterval(timerInterval); // Ensure that any previous timer is cleared
             timerInterval = setInterval(() => {
                 let minutes = Math.floor(timeLeft / 60);
                 let seconds = timeLeft % 60;
@@ -144,31 +146,33 @@
                 audio.pause();
             }
         }
-        let isPaused = false; // 用來跟蹤計時器和音樂是否已經暫停
 
         function stopMusic() {
             var audio = document.getElementById("myAudio");
-            var stopIcon = document.querySelector('img[alt="Stop Icon"]'); // 選取 stop.svg 圖標
+            var stopIcon = document.querySelector('img[alt="Stop Icon"]');
 
             if (!isPaused) {
-                // 暫停音樂和計時器，並將圖標改為 play.svg
+                // Pause the audio and the timer, switch icon to play.svg
                 audio.pause();
-                clearInterval(timerInterval);
-                stopIcon.src = "play.svg"; // 切換圖標為 play.svg
+                clearInterval(timerInterval); // Stop the timer
+                stopIcon.src = "play.svg"; // Switch icon to play
                 console.log("Timer and music paused");
             } else {
-                // 恢復音樂和計時器，並將圖標改回 stop.svg
+                // Resume the audio and the timer, switch icon back to stop.svg
                 audio.play();
-                startTimer();
-                stopIcon.src = "stop.svg"; // 切換圖標為 stop.svg
+                startTimer(); // Restart the timer
+                stopIcon.src = "stop.svg"; // Switch icon to stop
                 console.log("Timer and music resumed");
             }
 
-            isPaused = !isPaused; // 切換狀態
+            isPaused = !isPaused; // Toggle pause state
         }
+
         // Replay music and reset the timer
         function replayMusic() {
             var audio = document.getElementById("myAudio");
+            var stopIcon = document.querySelector('img[alt="Stop Icon"]');
+
             audio.currentTime = 0; // Reset the audio to the beginning
             audio.play(); // Play the audio again
 
@@ -177,9 +181,18 @@
             clearInterval(timerInterval); // Clear the current interval
             startTimer(); // Start a new timer
             console.log("Replay Icon clicked, timer and music reset");
+
+            // Check if the stop icon is in the "play" state, and switch back to "stop"
+            if (stopIcon.src.includes("play.svg")) {
+                stopIcon.src = "stop.svg"; // If the icon was play.svg, switch it to stop.svg
+                isPaused = false; // Make sure isPaused is updated to reflect the running state
+            } else {
+                // If the icon is already stop.svg, it means the music was playing, so keep it as stop.svg
+                stopIcon.src = "stop.svg";
+            }
         }
 
-        // 返回鍵，進入主頁
+        // Go back to the main page
         function goToOnePage() {
             window.location.href = 'focus.html';
         }
