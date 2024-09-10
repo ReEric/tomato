@@ -227,13 +227,19 @@
             width: 100%;
             height: 100%;
             background-color: rgba(255, 255, 255, 0.5);
+            margin-left: -430px;
+            margin-top: -200px;
         }
         
         .modal-content {
-            background-color: #fff;
+            background-color: white;
+            border-radius: 10px;
+            width: 350px;
             padding: 20px;
-            border-radius: 8px;
-            width: 400px;
+            margin: auto;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         .modal-header {
@@ -259,13 +265,28 @@
         }
         
         .modal-body {
-            margin-top: 10px;
+            padding: 20px 10px;
+            text-align: center;
         }
         
         .modal-body h3 {
             margin-bottom: 15px;
             color: #d23b6b;
             font-size: 18px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+        
+        .button-group button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
         }
         
         .footer-buttons {
@@ -282,19 +303,31 @@
         .footer-buttons .confirm-btn {
             background-color: #d23b6b;
             color: white;
+            border: none;
+            /* 移除邊框 */
+            padding: 10px 20px;
+            border-radius: 5px;
+            /* 圓角 */
+            font-size: 16px;
         }
         
         .footer-buttons .cancel-btn {
             background-color: lightgray;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            /* 圓角 */
+            font-size: 16px;
         }
         
         .task-input {
             width: 80%;
+            margin-left: -80px;
             padding: 10px 10px 10px 10px;
             margin-bottom: 20px;
             border: 1px solid #ffffff;
             border-radius: 5px;
-            margin-left: -50px;
         }
         
         .task-input::placeholder {
@@ -302,7 +335,9 @@
             color: #d23b6b;
             font-size: 18px;
             font-weight: bold;
+            /* 設定字體為粗體 */
             opacity: 1;
+            /* 確保在所有瀏覽器中 placeholder 不透明 */
         }
         
         .footer {
@@ -361,8 +396,6 @@
             </div>
         </div>
 
-        <!-- Button to open the modal -->
-        <button id="addTaskBtn">添加待辦</button>
     </div>
 
     <!-- Modal structure -->
