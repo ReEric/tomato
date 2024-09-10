@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Completion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 400px;
+            height: 650px;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        
+        .task-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+        
+        h3 {
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .text {
+            margin-right: 8px;
+        }
+        
+        .triangle {
+            transition: transform 0.3s ease;
+        }
+        
+        .task-content {
+            padding: 10px 0;
+            display: block;
+            transition: max-height 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .task {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .task.completed {
+            animation: slideOutRight 0.5s forwards;
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+        
+        .task.uncompleted {
+            animation: slideOutLeft 0.5s forwards;
+        }
+        
+        @keyframes slideOutLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+        }
+        
+        .task.completed input[type="checkbox"]:checked+.task-label {
+            color: lightgray;
+            text-decoration: line-through;
+        }
+        
+        .completed-section .task {
+            opacity: 0.5;
+        }
+        
+        .completed-section .task input[type="checkbox"] {
+            pointer-events: none;
+        }
+        
+        .task-content.hidden {
+            max-height: 0;
+            padding: 0;
+            display: none;
+        }
+        
+        .hidden .triangle {
+            transform: rotate(180deg);
+        }
+        /* Modal styles */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            margin-top: 10px;
+        }
+        
+        .footer-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        
+        .footer-buttons button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="task-container">
+        <div class="today-section">
+            <h3 class="section-header" onclick="toggleSection('todayContent')">
+                今天 <span class="triangle">▲</span>
+            </h3>
+            <div id="todayContent" class="task-content">
+                <!-- Tasks will be added here dynamically -->
+            </div>
+        </div>
+
+        <div class="completed-section">
+            <h3 class="section-header" onclick="toggleSection('completedContent')">
+                今天完成 <span class="triangle">▲</span>
+            </h3>
+            <div id="completedContent" class="task-content">
+                <!-- Completed tasks will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Button to open the modal -->
+        <button id="addTaskBtn">添加待辦</button>
+    </div>
+
+    <!-- Modal structure -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>添加待辦</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="task-input" placeholder="輸入待辦名稱" id="taskInput">
+            </div>
+            <div class="footer-buttons">
+                <button class="confirm-btn" onclick="addTask()">確認</button>
+                <button class="cancel-btn" onclick="closeModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle the visibility of sections
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            content.classList.toggle('hidden'); // Toggle hidden class to show/hide content
+
+            const triangle = content.previousElementSibling.querySelector('.triangle');
+            triangle.classList.toggle('hidden'); // Rotate triangle
+        }
+
+        // Open modal
+        document.getElementById('addTaskBtn').addEventListener('click', function() {
+            document.getElementById('myModal').style.display = 'flex';
+        });
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        // Add a new task
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskName = taskInput.value.trim();
+
+            if (taskName !== '') {
+                // Create a new task element
+                const newTask = document.createElement('label');
+                newTask.classList.add('task');
+
+                const taskHTML = `
+                    <input type="checkbox" onchange="handleTaskChange(this)">
+                    <span class="task-label">${taskName}</span>
+                `;
+
+                newTask.innerHTML = taskHTML;
+
+                // Append the new task to the "today" section
+                document.getElementById('todayContent').appendChild(newTask);
+
+                // Clear the input field
+                taskInput.value = '';
+
+                // Close the modal
+                closeModal();
+            } else {
+                alert('請輸入待辦名稱');
+            }
+        }
+
+        // Handle task checkbox change
+        function handleTaskChange(checkbox) {
+            const task = checkbox.parentElement;
+            const targetSection = checkbox.checked ? 'completedContent' : 'todayContent';
+            const targetContainer = document.getElementById(targetSection);
+
+            if (checkbox.checked) {
+                // Add animation class before moving the task
+                task.classList.add('completed');
+                setTimeout(() => {
+                    targetContainer.appendChild(task);
+                    task.classList.remove('completed'); // Remove animation class
+                }, 500); // Match the animation duration
+            } else {
+                // Add animation class before moving the task
+                task.classList.add('uncompleted');
+                setTimeout(() => {
+                    targetContainer.appendChild(task);
+                    task.classList.remove('uncompleted'); // Remove animation class
+                }, 500); // Match the animation duration
+            }
+        }
+    </script>
+</body>
+
+</html>

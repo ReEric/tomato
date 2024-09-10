@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>番茄時鐘</title>
+    <style>
+        body {
+            width: 400px;
+            height: 650px;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 380px;
+            padding: 10px;
+            margin-right: -20px;
+        }
+        
+        .header img {
+            width: 39px;
+            height: 64px;
+            cursor: pointer;
+        }
+        
+        .quote {
+            text-align: center;
+            height: 88px;
+            width: 400px;
+            font-size: 36px;
+        }
+        
+        .timer {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 400px;
+            height: 800px;
+            margin-top: 20px;
+        }
+        
+        .timer img {
+            width: 400px;
+            height: 300px;
+            object-fit: contain;
+            margin-top: 0px;
+        }
+        
+        .timer span {
+            position: absolute;
+            font-size: 80px;
+            font-weight: bold;
+            color: black;
+            margin-top: 40px;
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            width: 400px;
+        }
+        
+        .footer img {
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img src="返回.svg" alt="Back Icon" onclick="goToOnePage()">
+    </div>
+
+    <div class="quote">
+        <p>“充滿希望的旅途，<br>勝過終點的到達。”</p>
+    </div>
+
+    <div class="timer">
+        <img src="番茄.svg">
+        <span>25:00</span>
+    </div>
+
+    <div class="footer">
+        <!-- Sun icon doesn't have a functionality, it's for display only -->
+        <img src="sun.svg" alt="Sun Icon">
+
+        <!-- Music icon for toggling play/pause -->
+        <img src="music.svg" alt="Music Icon" onclick="toggleMusic()">
+
+        <!-- Audio element -->
+        <audio id="myAudio" loop>
+            <source src="heaven.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+
+        <!-- Stop icon for stopping the audio -->
+        <img src="stop.svg" alt="Stop Icon" onclick="stopMusic()">
+
+        <!-- Replay icon for replaying the audio and resetting timer -->
+        <img src="replay.svg" alt="Replay Icon" onclick="replayMusic()">
+    </div>
+
+    <script>
+        let timerElement = document.querySelector('.timer span');
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                timeLeft--;
+
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's up!");
+                }
+            }, 1000);
+        }
+
+        // Initialize the timer when the page loads
+        startTimer();
+
+        // Toggle play and pause for the audio
+        function toggleMusic() {
+            var audio = document.getElementById("myAudio");
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+        let isPaused = false; // 用來跟蹤計時器和音樂是否已經暫停
+
+        function stopMusic() {
+            var audio = document.getElementById("myAudio");
+            var stopIcon = document.querySelector('img[alt="Stop Icon"]'); // 選取 stop.svg 圖標
+
+            if (!isPaused) {
+                // 暫停音樂和計時器，並將圖標改為 play.svg
+                audio.pause();
+                clearInterval(timerInterval);
+                stopIcon.src = "play.svg"; // 切換圖標為 play.svg
+                console.log("Timer and music paused");
+            } else {
+                // 恢復音樂和計時器，並將圖標改回 stop.svg
+                audio.play();
+                startTimer();
+                stopIcon.src = "stop.svg"; // 切換圖標為 stop.svg
+                console.log("Timer and music resumed");
+            }
+
+            isPaused = !isPaused; // 切換狀態
+        }
+        // Replay music and reset the timer
+        function replayMusic() {
+            var audio = document.getElementById("myAudio");
+            audio.currentTime = 0; // Reset the audio to the beginning
+            audio.play(); // Play the audio again
+
+            // Reset the timer to 25 minutes and restart the countdown
+            timeLeft = 25 * 60; // Reset to 25 minutes in seconds
+            clearInterval(timerInterval); // Clear the current interval
+            startTimer(); // Start a new timer
+            console.log("Replay Icon clicked, timer and music reset");
+        }
+
+        // 返回鍵，進入主頁
+        function goToOnePage() {
+            window.location.href = 'focus.html';
+        }
+    </script>
+</body>
+
+</html>
