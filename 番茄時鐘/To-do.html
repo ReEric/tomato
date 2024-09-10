@@ -12,16 +12,11 @@
             box-sizing: border-box;
         }
         
-        html,
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             width: 400px;
             height: 650px;
-            margin: 0;
-            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
         }
         
         h3 {
@@ -42,10 +37,9 @@
             border: 1px solid #ddd;
             padding: 20px;
             border-radius: 8px;
+            margin-top: -550px;
             width: 400px;
-            height: 650px;
-            margin-top: 200px;
-            margin-left: -400px;
+            height: 450px;
         }
         
         .triangle {
@@ -224,10 +218,8 @@
             z-index: 1;
             left: 0;
             top: 0;
-            width: 80%;
-            height: 80%;
-            margin-top: -220px;
-            margin-right: -60px;
+            width: 100%;
+            height: 100%;
             background-color: rgba(255, 255, 255, 0.5);
         }
         
@@ -368,7 +360,6 @@
     <div class="container">
         <div class="header">
             <span class="center-text">待辦</span>
-            <span class="right-icon">必開<br>權限</span>
             <img src="榮譽.svg" alt="榮譽 Icon" class="榮譽-icon">
             <img src="add.svg" alt="add Icon" class="add-icon" id="addTaskBtn">
             <img src="menu.svg" alt="Menu Icon" class="menu-icon">
