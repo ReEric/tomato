@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Completion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        
+        .task-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+        
+        h3 {
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            justify-content: flex-start;
+            /* Aligns items to the left */
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .text {
+            margin-right: 8px;
+            /* Adds a little space between the text and triangle */
+        }
+        
+        .triangle {
+            transition: transform 0.3s ease;
+        }
+        
+        .task-content {
+            padding: 10px 0;
+            display: block;
+            transition: max-height 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .task {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .task input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .task.completed input[type="checkbox"]:checked+.task-label {
+            color: lightgray;
+            text-decoration: line-through;
+        }
+        
+        .completed-section .task {
+            opacity: 0.5;
+        }
+        
+        .completed-section .task input[type="checkbox"] {
+            pointer-events: none;
+        }
+        /* Initially hide the content in both sections */
+        
+        .task-content.hidden {
+            max-height: 0;
+            padding: 0;
+            display: none;
+        }
+        
+        .hidden .triangle {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="task-container">
+        <div class="today-section">
+            <h3 class="section-header" onclick="toggleSection('todayContent')">
+                今天 <span class="triangle">▲</span>
+            </h3>
+            <div id="todayContent" class="task-content">
+                <label class="task">
+          <input type="checkbox" id="todayTask">
+          <span class="task-label">吃飯</span>
+        </label>
+            </div>
+        </div>
+
+        <div class="completed-section">
+            <h3 class="section-header" onclick="toggleSection('completedContent')">
+                今天完成 <span class="triangle">▲</span>
+            </h3>
+            <div id="completedContent" class="task-content">
+                <label class="task completed">
+          <input type="checkbox" id="completedTask" disabled>
+          <span class="task-label">吃飯</span>
+        </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle the visibility of sections
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            content.classList.toggle('hidden'); // Toggle hidden class to show/hide content
+
+            const triangle = content.previousElementSibling.querySelector('.triangle');
+            triangle.classList.toggle('hidden'); // Rotate triangle
+        }
+
+        document.getElementById('todayTask').addEventListener('change', function() {
+            const completedTaskCheckbox = document.getElementById('completedTask');
+            if (this.checked) {
+                completedTaskCheckbox.checked = true;
+            } else {
+                completedTaskCheckbox.checked = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
