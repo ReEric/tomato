@@ -371,8 +371,8 @@
     <!-- tolist -->
     <div class="task-container">
         <div class="today-section">
-            <h3 class="section-header" onclick="toggleSection('todayContent')">
-                今天 <span class="triangle">▲</span>
+            <h3 class="section-header" onclick="toggleSection('todayContent', this)">
+                今天 <span class="triangle">▼</span>
             </h3>
             <div id="todayContent" class="task-content">
                 <!-- Tasks will be added here dynamically -->
@@ -380,14 +380,13 @@
         </div>
 
         <div class="completed-section">
-            <h3 class="section-header" onclick="toggleSection('completedContent')">
+            <h3 class="section-header" onclick="toggleSection('completedContent', this)">
                 今天完成 <span class="triangle">▲</span>
             </h3>
             <div id="completedContent" class="task-content">
                 <!-- Completed tasks will be added here dynamically -->
             </div>
         </div>
-
     </div>
 
     <!-- Modal structure -->
@@ -433,19 +432,25 @@
         </div>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks(); // 當頁面加載時載入待辦事項
+        });
+
         function goToOnePage() {
             window.location.href = 'focus.html';
-
         }
 
-
         // Function to toggle the visibility of sections
-        function toggleSection(sectionId) {
+        function toggleSection(sectionId, headerElement) {
             const content = document.getElementById(sectionId);
             content.classList.toggle('hidden'); // Toggle hidden class to show/hide content
 
-            const triangle = content.previousElementSibling.querySelector('.triangle');
-            triangle.classList.toggle('hidden'); // Rotate triangle
+            const triangle = headerElement.querySelector('.triangle');
+            if (content.classList.contains('hidden')) {
+                triangle.innerHTML = '▼'; // Show down triangle
+            } else {
+                triangle.innerHTML = '▲'; // Show up triangle
+            }
         }
 
         // Open modal
@@ -467,16 +472,16 @@
                 // Create a new task element
                 const newTask = document.createElement('label');
                 newTask.classList.add('task');
-
-                const taskHTML = `
-                    <input type="checkbox" onchange="handleTaskChange(this)">
-                    <span class="task-label">${taskName}</span>
-                `;
-
-                newTask.innerHTML = taskHTML;
+                newTask.innerHTML = `
+            <input type="checkbox" onchange="handleTaskChange(this)">
+            <span class="task-label">${taskName}</span>
+        `;
 
                 // Append the new task to the "today" section
                 document.getElementById('todayContent').appendChild(newTask);
+
+                // Save tasks to localStorage
+                saveTasks();
 
                 // Clear the input field
                 taskInput.value = '';
@@ -500,6 +505,8 @@
                 setTimeout(() => {
                     targetContainer.appendChild(task);
                     task.classList.remove('completed'); // Remove animation class
+                    // Save tasks to localStorage
+                    saveTasks();
                 }, 500); // Match the animation duration
             } else {
                 // Add animation class before moving the task
@@ -507,8 +514,52 @@
                 setTimeout(() => {
                     targetContainer.appendChild(task);
                     task.classList.remove('uncompleted'); // Remove animation class
+                    // Save tasks to localStorage
+                    saveTasks();
                 }, 500); // Match the animation duration
             }
+        }
+
+        // Save tasks to localStorage
+        function saveTasks() {
+            const todayTasks = Array.from(document.getElementById('todayContent').children).map(task => ({
+                name: task.querySelector('.task-label').textContent,
+                completed: task.querySelector('input').checked
+            }));
+
+            const completedTasks = Array.from(document.getElementById('completedContent').children).map(task => ({
+                name: task.querySelector('.task-label').textContent,
+                completed: task.querySelector('input').checked
+            }));
+
+            localStorage.setItem('todayTasks', JSON.stringify(todayTasks));
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+        }
+
+        // Load tasks from localStorage
+        function loadTasks() {
+            const todayTasks = JSON.parse(localStorage.getItem('todayTasks')) || [];
+            const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+
+            todayTasks.forEach(taskData => {
+                const task = document.createElement('label');
+                task.classList.add('task');
+                task.innerHTML = `
+            <input type="checkbox" ${taskData.completed ? 'checked' : ''} onchange="handleTaskChange(this)">
+            <span class="task-label">${taskData.name}</span>
+        `;
+                document.getElementById('todayContent').appendChild(task);
+            });
+
+            completedTasks.forEach(taskData => {
+                const task = document.createElement('label');
+                task.classList.add('task');
+                task.innerHTML = `
+            <input type="checkbox" ${taskData.completed ? 'checked' : ''} onchange="handleTaskChange(this)">
+            <span class="task-label">${taskData.name}</span>
+        `;
+                document.getElementById('completedContent').appendChild(task);
+            });
         }
     </script>
 

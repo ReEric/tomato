@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List with Modal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            width: 400px;
+            height: 650px;
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+        }
+        
+        .container {
+            width: 400px;
+            height: 100%;
+            padding-top: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .center-text {
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .right-icon {
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            margin-right: 10px;
+        }
+        
+        .list {
+            margin-top: 20px;
+        }
+        
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 378px;
+            height: 62px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+        }
+        
+        .list-item .task-name {
+            font-weight: bold;
+            color: #ffffff;
+            padding: 2px;
+            margin-bottom: 2px;
+        }
+        
+        .list-item .task-time {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .list-item button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .list-item button:hover {
+            background-color: #0056b3;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+        
+        .add-icon {
+            width: 21px;
+            height: 21px;
+            margin-right: 15px;
+        }
+        
+        .right-icon {
+            width: 55px;
+            height: 58px;
+            size: 24px;
+            margin-right: 10px;
+        }
+        
+        .榮譽-icon {
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 400px;
+        }
+        
+        .footer-item {
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .footer-icon {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        
+        .data-section {
+            margin: 20px;
+        }
+        
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .data-header div {
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .chart-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* 裸空圓餅圖 */
+        
+        .pie-chart {
+            width: 150px;
+            height: 150px;
+            background: conic-gradient(#007BFF 0% 42%, #FF6347 42% 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        /* 製作裸空效果的內圓 */
+        
+        .pie-chart::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background-color: #fff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        /* 顯示圓餅圖中的文字 */
+        
+        .pie-chart span {
+            position: absolute;
+            z-index: 2;
+            font-size: 14px;
+            color: black;
+            text-align: center;
+        }
+        
+        .chart-labels {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 150px;
+        }
+        
+        .chart-labels span {
+            font-size: 12px;
+        }
+        
+        .chart-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .chart-bar div {
+            margin-bottom: 1px;
+        }
+        
+        .bar {
+            height: 20px;
+            background-color: #007BFF;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            width: 80px;
+            padding-top: 2px;
+        }
+        
+        .red-bar {
+            background-color: #FF6347;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <span class="center-text">待辦</span>
+            <img src="榮譽.svg" alt="榮譽 Icon" class="榮譽-icon">
+            <img src="add.svg" alt="add Icon" class="add-icon" onclick="openModal()">
+            <img src="menu.svg" alt="Menu Icon" class="menu-icon">
+        </div>
+
+        <!-- Data Section -->
+        <div class="data-section">
+            <div class="data-header">
+                <div>
+                    <p>總專注次數</p>
+                    <p>1</p>
+                </div>
+                <div>
+                    <p>總時長</p>
+                    <p>100min</p>
+                </div>
+            </div>
+
+            <div class="data-header">
+                <div>
+                    <p>今日專注次數</p>
+                    <p>1</p>
+                </div>
+                <div>
+                    <p>時長</p>
+                    <p>100min</p>
+                </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="chart-section">
+                <div class="pie-chart">
+                    <span id="total-time">總時長<br>100min</span>
+
+                </div>
+
+                <!-- Pie Chart Labels -->
+                <div class="chart-labels">
+                    <span style="color: #007BFF;">吃飯</span>
+                    <span style="color: #FF6347;">睡覺</span>
+                </div>
+
+                <!-- Bar Chart -->
+
+                <div class="chart-bar">
+                    <!-- First item: 吃飯 -->
+                    <div style="display: flex; align-items: center;">
+                        <span style="color: black; font-size: 20px; font-weight: bold;">吃飯</span>
+                        <div style="margin-left: 10px;">
+                            <div class="bar">42min</div>
+                        </div>
+                    </div>
+                    <span style="color: #007BFF; font-size: 20px;font-weight: 600;">42.0%</span>
+                </div>
+
+                <div class="chart-bar" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <!-- Second item: 睡覺 -->
+                    <div style="display: flex; align-items: center;">
+                        <span style="color: black; font-size: 20px; font-weight: bold;">睡覺</span>
+                        <div style="margin-left: 10px;">
+                            <div class="bar red-bar" style="width: 110px; background-color: #FF6347;">58min</div>
+                        </div>
+                    </div>
+                    <span style="color: #FF6347; font-size: 20px;font-weight: 600;">58.0%</span>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer">
+                    <div class="footer-item">
+                        <img src="25min.svg" alt="專注" class="footer-icon">
+                        <p>專注</p>
+                    </div>
+                    <div class="footer-item">
+                        <img src="待辦.svg" alt="待辦" class="footer-icon" onclick="goToOnePage()">
+                        <p>待辦</p>
+                    </div>
+                    <div class="footer-item">
+                        <img src="數據.svg" alt="數據" class="footer-icon">
+                        <p>數據</p>
+                    </div>
+                    <div class="footer-item">
+                        <img src="goal.svg" alt="目標" class="footer-icon">
+                        <p>目標</p>
+                    </div>
+                    <div class="footer-item">
+                        <img src="person.svg" alt="個人" class="footer-icon">
+                        <p>個人</p>
+                    </div>
+                </div>
+
+            </div>
+            <script>
+                // 从 localStorage 读取 totalAccumulatedTime
+                let accumulatedTime = localStorage.getItem('totalAccumulatedTime');
+
+                // 如果 accumulatedTime 存在，将其转换为整数；否则，设置为 0
+                if (accumulatedTime) {
+                    accumulatedTime = parseInt(accumulatedTime, 10);
+                    console.log("Accumulated time:", accumulatedTime);
+                } else {
+                    accumulatedTime = 0;
+                    console.log("No accumulated time found. Setting accumulatedTime to 0.");
+                }
+
+                // 定义一个函数来更新显示
+                function updateTotalTimeDisplay() {
+                    // 计算分钟数和秒数
+                    let minutes = Math.floor(accumulatedTime / 60);
+                    let seconds = accumulatedTime % 60;
+
+                    // 如果小于60秒，只显示秒数
+                    if (accumulatedTime < 60) {
+                        document.getElementById('total-time').innerHTML = `總時長<br>${accumulatedTime}s`;
+                    } else {
+                        // 否则显示分钟和秒数
+                        document.getElementById('total-time').innerHTML = `總時長<br>${minutes} min ${seconds}s`;
+                    }
+                }
+
+
+                // 在页面加载完成后，更新显示
+                window.onload = function() {
+                    updateTotalTimeDisplay();
+                };
+            </script>
+
+
+</body>
+
+</html>
